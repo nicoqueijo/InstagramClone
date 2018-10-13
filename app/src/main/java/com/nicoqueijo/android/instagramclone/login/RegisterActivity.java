@@ -11,10 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.nicoqueijo.android.instagramclone.R;
+import com.nicoqueijo.android.instagramclone.utils.FirebaseMethods;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -33,17 +35,47 @@ public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseMethods firebaseMethods;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        mContext = RegisterActivity.this;
+        firebaseMethods = new FirebaseMethods(mContext);
         initWidgets();
         setupFirebaseAuth();
+        init();
+    }
+
+    private void init() {
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                email = mEmail.getText().toString();
+                username = mUsername.getText().toString();
+                password = mPassword.getText().toString();
+                if (checkInputs(email, username, password)) {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    mLoadingPleaseWait.setVisibility(View.VISIBLE);
+                    firebaseMethods.registerNewEmail(email, password, username);
+                }
+            }
+        });
+    }
+
+    private boolean checkInputs(String email, String username, String password) {
+        if (email.equals("") || username.equals("") || password.equals("")) {
+            Toast.makeText(mContext, "All fields must be filled out.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
     private void initWidgets() {
         mEmail = findViewById(R.id.input_email);
+        mUsername = findViewById(R.id.input_username);
+        btnRegister = findViewById(R.id.btn_register);
         mProgressBar = findViewById(R.id.progressBar);
         mLoadingPleaseWait = findViewById(R.id.loadingPleaseWait);
         mPassword = findViewById(R.id.input_password);
