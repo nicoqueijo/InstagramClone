@@ -77,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                             .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
+                                    FirebaseUser user = mAuth.getCurrentUser();
                                     if (!task.isSuccessful()) {
                                         // If sign in fails, display a message to the user.
                                         Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -84,9 +85,19 @@ public class LoginActivity extends AppCompatActivity {
                                         mProgressBar.setVisibility(View.GONE);
                                         mPleaseWait.setVisibility(View.GONE);
                                     } else {
-                                        Toast.makeText(LoginActivity.this, getString(R.string.auth_success), Toast.LENGTH_SHORT).show();
-                                        mProgressBar.setVisibility(View.GONE);
-                                        mPleaseWait.setVisibility(View.GONE);
+                                        try {
+                                            if (user.isEmailVerified()) {
+                                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                                startActivity(intent);
+                                            } else {
+                                                Toast.makeText(mContext, "Email is not verified \n check your email inbox.", Toast.LENGTH_SHORT).show();
+                                                mProgressBar.setVisibility(View.GONE);
+                                                mPleaseWait.setVisibility(View.GONE);
+                                                mAuth.signOut();
+                                            }
+                                        } catch (NullPointerException e) {
+                                            Log.d(TAG, "onComplete: NullPointerException: " + e.getMessage());
+                                        }
                                     }
                                 }
                             });
