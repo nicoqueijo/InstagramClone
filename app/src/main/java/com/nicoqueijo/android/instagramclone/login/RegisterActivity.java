@@ -121,6 +121,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 Log.d(TAG, "onDataChange: username already exists. Appending random string to name: " + append);
                                 username += append;
                             }
+                            firebaseMethods.addNewUser(email, username, "", "", "");
+                            Toast.makeText(mContext, "Signup successful. Sending verification email.", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
