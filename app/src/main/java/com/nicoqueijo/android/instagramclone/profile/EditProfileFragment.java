@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.nicoqueijo.android.instagramclone.R;
+import com.nicoqueijo.android.instagramclone.dialogs.ConfirmPasswordDialog;
 import com.nicoqueijo.android.instagramclone.models.User;
 import com.nicoqueijo.android.instagramclone.models.UserAccountSettings;
 import com.nicoqueijo.android.instagramclone.models.UserSettings;
@@ -100,26 +101,21 @@ public class EditProfileFragment extends Fragment {
         final String email = mEmail.getText().toString();
         final long phoneNumber = Long.parseLong(mPhoneNumber.getText().toString());
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-
-                // case 1: user did not change username.
-                if (!mUserSettings.getUser().getUsername().equals(username)) {
-                    checkIfUsernameExists(username);
-                }
-                // case 2: user changed username. Need to check for uniqueness.
-                else {
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        // case 1: if the user made a change to their username
+        if (!mUserSettings.getUser().getUsername().equals(username)) {
+            checkIfUsernameExists(username);
+        }
+        // case 2: if the user made a change to their email
+        if (!mUserSettings.getUser().getEmail().equals(email)) {
+            // step 1: Reauthenticate
+            //          - Confirm email and password
+            ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
+            dialog.show(getFragmentManager(), getString(R.string.confirm_password_dialog));
+            // step 2: Check if email already registered
+            //          -'fetchProvidersForEmail(String email)'
+            // step 3: Change the email
+            //          - submit new email to database and authentication
+        }
     }
 
     private void checkIfUsernameExists(final String username) {
