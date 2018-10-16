@@ -100,10 +100,33 @@ public class FirebaseMethods {
                 0,
                 0,
                 profile_photo,
-                username,
+                StringManipulation.condenseUsername(username),
                 website
         );
 
         myRef.child(mContext.getString(R.string.dbname_user_account_settings)).child(userID).setValue(settings);
+    }
+
+    private UserAccountSettings getUserAccountSettings(DataSnapshot dataSnapshot) {
+        UserAccountSettings settings = new UserAccountSettings();
+        User user = new User();
+
+        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+            // user_account_setting node
+            if (ds.getKey().equals(mContext.getString(R.string.dbname_user_account_settings))) {
+                try {
+                    settings.setDisplay_name(ds.child(userID).getValue(UserAccountSettings.class).getDisplay_name());
+                    settings.setUsername(ds.child(userID).getValue(UserAccountSettings.class).getUsername());
+                    settings.setWebsite(ds.child(userID).getValue(UserAccountSettings.class).getWebsite());
+                    settings.setDescription(ds.child(userID).getValue(UserAccountSettings.class).getDescription());
+                    settings.setProfile_photo(ds.child(userID).getValue(UserAccountSettings.class).getProfile_photo());
+                    settings.setPosts(ds.child(userID).getValue(UserAccountSettings.class).getPosts());
+                    settings.setFollowing(ds.child(userID).getValue(UserAccountSettings.class).getFollowing());
+                    settings.setFollowers(ds.child(userID).getValue(UserAccountSettings.class).getFollowers());
+                } catch (NullPointerException e) {
+                    Log.d(TAG, "getUserAccountSettings: NullPointerException: " + e.getMessage());
+                }
+            }
+        }
     }
 }
