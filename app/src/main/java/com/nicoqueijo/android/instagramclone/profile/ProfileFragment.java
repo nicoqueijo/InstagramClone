@@ -27,7 +27,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.nicoqueijo.android.instagramclone.R;
+import com.nicoqueijo.android.instagramclone.models.User;
+import com.nicoqueijo.android.instagramclone.models.UserAccountSettings;
+import com.nicoqueijo.android.instagramclone.models.UserSettings;
 import com.nicoqueijo.android.instagramclone.utils.BottomNavigationViewHelper;
+import com.nicoqueijo.android.instagramclone.utils.FirebaseMethods;
+import com.nicoqueijo.android.instagramclone.utils.UniversalImageLoader;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -41,6 +46,7 @@ public class ProfileFragment extends Fragment {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
+    private FirebaseMethods mFirebaseMethods;
 
     private TextView mPosts;
     private TextView mFollowers;
@@ -76,9 +82,26 @@ public class ProfileFragment extends Fragment {
         mProfileMenu = view.findViewById(R.id.profileMenu);
         mBottomNavigationView = view.findViewById(R.id.bottomNavViewBar);
         mContext = getActivity();
+        mFirebaseMethods = new FirebaseMethods(getActivity());
+
         setupBottomNavigationView();
         setupToolbar();
+        setupFirebaseAuth();
         return view;
+    }
+
+    private void setProfileWidgets(UserSettings userSettings) {
+        //User user = userSettings.getUser();
+        UserAccountSettings settings = userSettings.getSettings();
+        UniversalImageLoader.setImage(settings.getProfile_photo(), mProfilePhoto, null, "");
+        mDisplayName.setText(settings.getDisplay_name());
+        mUsername.setText(settings.getUsername());
+        mWebsite.setText(settings.getWebsite());
+        mDescription.setText(settings.getDescription());
+        mPosts.setText(String.valueOf(settings.getPosts()));
+        mFollowing.setText(String.valueOf(settings.getFollowing()));
+        mFollowers.setText(String.valueOf(settings.getFollowers()));
+        mProgressBar.setVisibility(View.GONE);
     }
 
     private void setupToolbar() {
@@ -129,7 +152,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Retrieve user info from database
-
+                setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot));
                 // Retrieve images for user
             }
 

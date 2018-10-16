@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.nicoqueijo.android.instagramclone.R;
 import com.nicoqueijo.android.instagramclone.models.User;
 import com.nicoqueijo.android.instagramclone.models.UserAccountSettings;
+import com.nicoqueijo.android.instagramclone.models.UserSettings;
 
 public class FirebaseMethods {
 
@@ -107,7 +108,7 @@ public class FirebaseMethods {
         myRef.child(mContext.getString(R.string.dbname_user_account_settings)).child(userID).setValue(settings);
     }
 
-    private UserAccountSettings getUserAccountSettings(DataSnapshot dataSnapshot) {
+    public UserSettings getUserSettings(DataSnapshot dataSnapshot) {
         UserAccountSettings settings = new UserAccountSettings();
         User user = new User();
 
@@ -127,6 +128,14 @@ public class FirebaseMethods {
                     Log.d(TAG, "getUserAccountSettings: NullPointerException: " + e.getMessage());
                 }
             }
+            // users node
+            if (ds.getKey().equals(mContext.getString(R.string.dbname_users))) {
+                user.setUsername(ds.child(userID).getValue(User.class).getUsername());
+                user.setEmail(ds.child(userID).getValue(User.class).getEmail());
+                user.setPhone_number(ds.child(userID).getValue(User.class).getPhone_number());
+                user.setUser_id(ds.child(userID).getValue(User.class).getUser_id());
+            }
         }
+        return new UserSettings(user, settings);
     }
 }
