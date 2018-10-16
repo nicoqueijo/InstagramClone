@@ -8,15 +8,6 @@
         android:background="@color/white">
 
         <RelativeLayout
-            android:id="@+id/relLayout1"
-            android:layout_width="match_parent"
-            android:layout_height="50dp">
-
-            <include layout="@layout/snippet_top_profilebar" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
             android:id="@+id/relLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
