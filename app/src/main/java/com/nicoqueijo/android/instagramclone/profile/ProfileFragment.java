@@ -1,5 +1,6 @@
 package com.nicoqueijo.android.instagramclone.profile;
 
+import android.accounts.Account;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -87,6 +88,17 @@ public class ProfileFragment extends Fragment {
         setupBottomNavigationView();
         setupToolbar();
         setupFirebaseAuth();
+
+        TextView editProfile = view.findViewById(R.id.textEditProfile);
+        editProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AccountSettingsActivity.class);
+                intent.putExtra(getString(R.string.calling_activity), getString(R.string.profile_activity));
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 

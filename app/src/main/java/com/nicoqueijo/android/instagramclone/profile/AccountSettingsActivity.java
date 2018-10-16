@@ -1,6 +1,7 @@
 package com.nicoqueijo.android.instagramclone.profile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -44,6 +45,8 @@ public class AccountSettingsActivity extends AppCompatActivity {
         setupSettingsList();
         setupBottomNavigationView();
         setupFragments();
+        getIncomingIntent();
+
         ImageView backArrow = findViewById(R.id.backArrow);
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,6 +54,13 @@ public class AccountSettingsActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void getIncomingIntent() {
+        Intent intent = getIntent();
+        if (intent.hasExtra(getString(R.string.calling_activity))) {
+            setViewPager(mPagerAdapter.getFragmentNumber(getString(R.string.edit_profile_fragment)));
+        }
     }
 
     private void setupFragments() {
