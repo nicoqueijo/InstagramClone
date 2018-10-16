@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,6 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.nicoqueijo.android.instagramclone.R;
 import com.nicoqueijo.android.instagramclone.models.User;
@@ -49,6 +51,9 @@ public class EditProfileFragment extends Fragment {
     private TextView mChangeProfilePhoto;
     private CircleImageView mProfilePhoto;
 
+    // vars
+    private UserSettings mUserSettings;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -73,6 +78,15 @@ public class EditProfileFragment extends Fragment {
                 getActivity().finish();
             }
         });
+
+        ImageView checkmark = view.findViewById(R.id.saveChanges);
+        checkmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveProfileSettings();
+            }
+        });
+
         return view;
     }
 
@@ -89,16 +103,11 @@ public class EditProfileFragment extends Fragment {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = new User();
-                for (DataSnapshot ds : dataSnapshot.child(getString(R.string.dbname_users)).getChildren()) {
-                    if (ds.getKey().equals(userID)) {
-                        user.setUsername(ds.getValue(User.class).getUsername());
-                    }
-                }
+
+
                 // case 1: user did not change username.
-                if (user.getUsername().equals(username)) {
-
-
+                if (!mUserSettings.getUser().getUsername().equals(username)) {
+                    checkIfUsernameExists(username);
                 }
                 // case 2: user changed username. Need to check for uniqueness.
                 else {
@@ -113,7 +122,33 @@ public class EditProfileFragment extends Fragment {
         });
     }
 
+    private void checkIfUsernameExists(final String username) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child(getString(R.string.dbname_users)).orderByChild(getString(R.string.field_username)).equalTo(username);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    // add the username
+                    mFirebaseMethods.updateUsername(username);
+                    Toast.makeText(getActivity(), "Saved username.", Toast.LENGTH_SHORT).show();
+                }
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                    if (singleSnapshot.exists()) {
+                        Toast.makeText(getActivity(), "That username already exists.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void setProfileWidgets(UserSettings userSettings) {
+        mUserSettings = userSettings;
         //User user = userSettings.getUser();
         UserAccountSettings settings = userSettings.getSettings();
         UniversalImageLoader.setImage(settings.getProfile_photo(), mProfilePhoto, null, "");
