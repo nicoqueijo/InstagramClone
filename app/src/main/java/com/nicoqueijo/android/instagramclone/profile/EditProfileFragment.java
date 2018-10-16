@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nicoqueijo.android.instagramclone.R;
+import com.nicoqueijo.android.instagramclone.models.User;
 import com.nicoqueijo.android.instagramclone.models.UserAccountSettings;
 import com.nicoqueijo.android.instagramclone.models.UserSettings;
 import com.nicoqueijo.android.instagramclone.utils.FirebaseMethods;
@@ -36,6 +37,7 @@ public class EditProfileFragment extends Fragment {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
     private FirebaseMethods mFirebaseMethods;
+    private String userID;
 
     // EditProfile Fragment widgets
     private EditText mDisplayName;
@@ -74,10 +76,42 @@ public class EditProfileFragment extends Fragment {
         return view;
     }
 
-//    private void setProfileImage() {
-//        String imgURL = "o.aolcdn.com/images/dims?quality=100&image_uri=http%3A%2F%2Fo.aolcdn.com%2Fhss%2Fstorage%2Fmidas%2F965fc84051391e2ed53ce19881178931%2F202486815%2F10%2Bam%2BOfficial%2BAnnounce_G_FB%2Bcopy.jpg&client=amp-blogside-v2&signature=6a6cab645d24897df83fe4a2fc399f58891167ca";
-//        UniversalImageLoader.setImage(imgURL, mProfilePhoto, null, "https://");
-//    }
+    // Retrieves the data contained in the widgets and submits it to the database.
+    // Before doing so it checks to make sure the username chosen is unique.
+    private void saveProfileSettings() {
+        final String displayName = mDisplayName.getText().toString();
+        final String username = mUsername.getText().toString();
+        final String website = mWebsite.getText().toString();
+        final String description = mDescription.getText().toString();
+        final String email = mEmail.getText().toString();
+        final long phoneNumber = Long.parseLong(mPhoneNumber.getText().toString());
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = new User();
+                for (DataSnapshot ds : dataSnapshot.child(getString(R.string.dbname_users)).getChildren()) {
+                    if (ds.getKey().equals(userID)) {
+                        user.setUsername(ds.getValue(User.class).getUsername());
+                    }
+                }
+                // case 1: user did not change username.
+                if (user.getUsername().equals(username)) {
+
+
+                }
+                // case 2: user changed username. Need to check for uniqueness.
+                else {
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     private void setProfileWidgets(UserSettings userSettings) {
         //User user = userSettings.getUser();
@@ -98,6 +132,8 @@ public class EditProfileFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
+        userID = mAuth.getCurrentUser().getUid();
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
