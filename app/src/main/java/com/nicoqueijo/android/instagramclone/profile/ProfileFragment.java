@@ -1,6 +1,5 @@
 package com.nicoqueijo.android.instagramclone.profile;
 
-import android.accounts.Account;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.nicoqueijo.android.instagramclone.R;
-import com.nicoqueijo.android.instagramclone.models.User;
 import com.nicoqueijo.android.instagramclone.models.UserAccountSettings;
 import com.nicoqueijo.android.instagramclone.models.UserSettings;
 import com.nicoqueijo.android.instagramclone.utils.BottomNavigationViewHelper;
