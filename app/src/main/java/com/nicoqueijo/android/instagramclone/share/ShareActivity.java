@@ -43,14 +43,14 @@ public class ShareActivity extends AppCompatActivity {
 
     private void setupViewPager() {
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
-//        adapter.addFragment(new GalleryFragment());
-//        adapter.addFragment(new PhotoFragment());
-//        mViewPager = findViewById(R.id.container);
-//        mViewPager.setAdapter(adapter);
-//        TabLayout tabLayout = findViewById(R.id.tabsBottom);
-//        tabLayout.setupWithViewPager(mViewPager);
-//        tabLayout.getTabAt(0).setText(getString(R.string.gallery));
-//        tabLayout.getTabAt(1).setText(getString(R.string.photo));
+        adapter.addFragment(new GalleryFragment());
+        adapter.addFragment(new PhotoFragment());
+        mViewPager = findViewById(R.id.container);
+        mViewPager.setAdapter(adapter);
+        TabLayout tabLayout = findViewById(R.id.tabsBottom);
+        tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.getTabAt(0).setText(getString(R.string.gallery));
+        tabLayout.getTabAt(1).setText(getString(R.string.photo));
     }
 
     public void verifyPermissions(String[] permissions) {
