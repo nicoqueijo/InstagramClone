@@ -111,6 +111,8 @@ public class EditProfileFragment extends Fragment {
             //          - Confirm email and password
             ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
             dialog.show(getFragmentManager(), getString(R.string.confirm_password_dialog));
+            dialog.setTargetFragment(EditProfileFragment.this, 1);
+
             // step 2: Check if email already registered
             //          -'fetchProvidersForEmail(String email)'
             // step 3: Change the email
