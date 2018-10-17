@@ -21,13 +21,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".likes.LikesActivity"></activity>
-        <activity android:name=".profile.ProfileActivity"></activity>
-        <activity android:name=".search.SearchActivity"></activity>
-        <activity android:name=".share.ShareActivity"></activity>
-        <activity android:name=".profile.AccountSettingsActivity"></activity>
+        <activity android:name=".likes.LikesActivity" />
+        <activity android:name=".profile.ProfileActivity" />
+        <activity android:name=".search.SearchActivity" />
+        <activity android:name=".share.ShareActivity" />
+        <activity android:name=".profile.AccountSettingsActivity" />
         <activity android:name=".login.LoginActivity" />
         <activity android:name=".login.RegisterActivity" />
+        <activity android:name=".share.NextActivity" />
     </application>
 
 </manifest>
