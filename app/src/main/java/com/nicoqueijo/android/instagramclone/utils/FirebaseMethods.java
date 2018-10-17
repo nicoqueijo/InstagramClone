@@ -46,6 +46,10 @@ public class FirebaseMethods {
         myRef.child(mContext.getString(R.string.dbname_user_account_settings)).child(userID).child(mContext.getString(R.string.field_username)).setValue(username);
     }
 
+    public void updateEmail(String email) {
+        myRef.child(mContext.getString(R.string.dbname_users)).child(userID).child(mContext.getString(R.string.field_email)).setValue(email);
+    }
+
 //    public boolean checkIfUsernameExists(String username, DataSnapshot dataSnapshot) {
 //        Log.d(TAG, "checkIfUsernameExists: checking if " + username + " already exists.");
 //        User user = new User();
