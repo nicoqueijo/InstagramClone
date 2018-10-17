@@ -29,4 +29,7 @@
     <!-- Intent extras -->
     <string name="profile_activity">Profile Activity</string>
 
+    <string name="gallery">GALLERY</string>
+    <string name="photo">PHOTO</string>
+
 </resources>
