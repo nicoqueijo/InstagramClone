@@ -1,5 +1,6 @@
 package com.nicoqueijo.android.instagramclone.share;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,12 +19,19 @@ import android.widget.TextView;
 import com.nicoqueijo.android.instagramclone.R;
 import com.nicoqueijo.android.instagramclone.utils.FilePaths;
 import com.nicoqueijo.android.instagramclone.utils.FileSearch;
+import com.nicoqueijo.android.instagramclone.utils.GridImageAdapter;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 
 public class GalleryFragment extends Fragment {
 
     private static final String TAG = GalleryFragment.class.getSimpleName();
+
+    // constants
+    private static final int NUM_GRID_COLUMNS = 3;
 
     // widgets
     private GridView mGridView;
@@ -33,6 +41,7 @@ public class GalleryFragment extends Fragment {
 
     // vars
     private ArrayList<String> directories;
+    private String mAppend = "file:/";
 
     @Nullable
     @Override
@@ -71,18 +80,66 @@ public class GalleryFragment extends Fragment {
             directories = FileSearch.getDirectoryPaths(filePaths.PICTURES);
         }
         directories.add(filePaths.CAMERA);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, directories);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, directories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mDirectorySpinner.setAdapter(adapter);
         mDirectorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                setupGridView(directories.get(position));
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+    }
+
+    private void setupGridView(String selectedDirectory) {
+        final ArrayList<String> imgURLs = FileSearch.getFilePaths(selectedDirectory);
+
+        // set grid column width
+        int gridWidth = getResources().getDisplayMetrics().widthPixels;
+        int imageWidth = gridWidth / NUM_GRID_COLUMNS;
+        mGridView.setColumnWidth(imageWidth);
+
+        GridImageAdapter adapter = new GridImageAdapter(getActivity(), R.layout.layout_grid_imageview, mAppend, imgURLs);
+        mGridView.setAdapter(adapter);
+
+        // set the first image to be displayed when the activity fragment view is inflated
+        setImage(imgURLs.get(0), mGalleryImage, mAppend);
+
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                setImage(imgURLs.get(position), mGalleryImage, mAppend);
+            }
+        });
+    }
+
+    private void setImage(String imgURL, ImageView image, String append) {
+        ImageLoader imageLoader = ImageLoader.getInstance();
+
+        imageLoader.displayImage(append + imgURL, image, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+                mProgressBar.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                mProgressBar.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                mProgressBar.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+                mProgressBar.setVisibility(View.INVISIBLE);
             }
         });
     }
