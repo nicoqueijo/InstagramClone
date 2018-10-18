@@ -1,5 +1,6 @@
 package com.nicoqueijo.android.instagramclone.profile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,6 +32,7 @@ import com.nicoqueijo.android.instagramclone.dialogs.ConfirmPasswordDialog;
 import com.nicoqueijo.android.instagramclone.models.User;
 import com.nicoqueijo.android.instagramclone.models.UserAccountSettings;
 import com.nicoqueijo.android.instagramclone.models.UserSettings;
+import com.nicoqueijo.android.instagramclone.share.ShareActivity;
 import com.nicoqueijo.android.instagramclone.utils.FirebaseMethods;
 import com.nicoqueijo.android.instagramclone.utils.UniversalImageLoader;
 
@@ -223,6 +225,14 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
         mDescription.setText(settings.getDescription());
         mEmail.setText(userSettings.getUser().getEmail());
         mPhoneNumber.setText(String.valueOf(userSettings.getUser().getPhone_number()));
+        mChangeProfilePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ShareActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getActivity().startActivity(intent);
+            }
+        });
     }
 
     // ---------------------------------------- Firebase ------------------------------------------
