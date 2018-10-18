@@ -67,6 +67,16 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
     private void getIncomingIntent() {
         Intent intent = getIntent();
+
+        // if there is an imageUrl attached as an extra, then it was chosen from the gallery/photo fragment
+        if (intent.hasExtra(getString(R.string.selected_image))) {
+            if (intent.getStringExtra(getString(R.string.return_to_fragment)).equals(getString(R.string.edit_profile_fragment))) {
+                // set the new profile picture
+                FirebaseMethods firebaseMethods = new FirebaseMethods(mContext);
+                firebaseMethods.uploadNewPhoto(getString(R.string.profile_photo), null, 0, intent.getStringExtra(getString(R.string.selected_image)));
+            }
+        }
+
         if (intent.hasExtra(getString(R.string.calling_activity))) {
             setViewPager(mPagerAdapter.getFragmentNumber(getString(R.string.edit_profile_fragment)));
         }
