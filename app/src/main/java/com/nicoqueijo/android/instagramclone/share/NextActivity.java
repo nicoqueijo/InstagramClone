@@ -59,6 +59,10 @@ public class NextActivity extends AppCompatActivity {
         setImage();
     }
 
+    private void someMethod() {
+
+    }
+
     private void setImage() {
         Intent intent = getIntent();
         ImageView image = findViewById(R.id.imageShare);
