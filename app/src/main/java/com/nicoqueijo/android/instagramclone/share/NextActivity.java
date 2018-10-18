@@ -69,14 +69,11 @@ public class NextActivity extends AppCompatActivity {
         setImage();
     }
 
-    private void someMethod() {
-
-    }
-
     private void setImage() {
         Intent intent = getIntent();
         ImageView image = findViewById(R.id.imageShare);
-        UniversalImageLoader.setImage(intent.getStringExtra(getString(R.string.selected_image)), image, null, mAppend);
+        imgUrl = intent.getStringExtra(getString(R.string.selected_image));
+        UniversalImageLoader.setImage(imgUrl, image, null, mAppend);
     }
 
     // ---------------------------------------- Firebase ------------------------------------------
