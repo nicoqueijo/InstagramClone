@@ -41,6 +41,17 @@ public class FirebaseMethods {
         }
     }
 
+    public int getImageCount(DataSnapshot dataSnapshot) {
+        int count = 0;
+        for (DataSnapshot ds : dataSnapshot.
+                child(mContext.getString(R.string.dbname_user_photos))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .getChildren()) {
+            count++;
+        }
+        return count;
+    }
+
     public void updateUserAccountSettings(String displayName, String website, String description, long phoneNumber) {
         if (displayName != null) {
             myRef.child(mContext.getString(R.string.dbname_user_account_settings)).child(userID).child(mContext.getString(R.string.field_display_name)).setValue(displayName);

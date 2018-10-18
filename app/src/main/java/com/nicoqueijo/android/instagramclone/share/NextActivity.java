@@ -32,11 +32,13 @@ public class NextActivity extends AppCompatActivity {
     private FirebaseMethods mFirebaseMethods;
 
     private String mAppend = "file:/";
+    private int imageCount = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_next);
+        mFirebaseMethods = new FirebaseMethods(NextActivity.this);
 
         setupFirebaseAuth();
 
@@ -93,7 +95,7 @@ public class NextActivity extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                imageCount = mFirebaseMethods.getImageCount(dataSnapshot);
             }
 
             @Override
